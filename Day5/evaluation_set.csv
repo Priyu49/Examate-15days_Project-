@@ -1,0 +1,13 @@
+sample_id,location,soil_type,ph,user_question,expected_answer
+1,Pune,Black,7.2,What crops grow best in this Pune sample?,Black soil with neutral pH 7.2 is ideal for wheat, jowar, and sugarcane.
+2,Satara,Red,6.5,How is the nitrogen level for this Satara record?,Nitrogen is 110 kg/acre; consider supplemental nitrogen fertilization.
+3,Nashik,Alluvial,7.8,Is this Nashik soil suitable for general farming?,Yes, alluvial soil with pH 7.8 supports diverse crops like grapes and vegetables.
+4,Kolhapur,Laterite,5.8,What amendment is needed for this acidic Kolhapur soil?,Soil is acidic (pH 5.8); recommend applying agricultural lime to raise pH.
+5,Solapur,Black,8.1,How do I handle the high pH in this Solapur sample?,Soil is alkaline (pH 8.1); recommend adding gypsum or organic compost.
+6,Pune,Black,7.0,What is the potassium status for this Pune sample?,Potassium is 220 kg/acre, which is optimal for crop growth.
+7,Sangli,Alluvial,7.5,Is phosphorus adequate in this Sangli sample?,Phosphorus is 26 kg/acre, indicating a balanced nutrient level.
+8,Nagpur,Red,6.8,What fertilizer is suggested for this Nagpur record?,Balanced NPK application is recommended for red soil at pH 6.8.
+9,Aurangabad,Black,7.9,Does this Aurangabad sample require pH correction?,pH is slightly high at 7.9; monitor organic matter levels.
+10,Thane,Laterite,6.0,What is the soil type and pH for Thane sample 10?,Laterite soil with an acidic pH of 6.0.
+11,Ahmednagar,Black,7.3,How is the soil health for Ahmednagar sample 11?,Good condition with balanced pH 7.3 and high nitrogen.
+12,Amravati,Red,6.6,What is the nitrogen count for Amravati sample 12?,Nitrogen is 115 kg/acre.
