@@ -1,4 +1,4 @@
-from Day01_Intro import print_intro
+from Day1.Day01_Intro import print_intro
 
 def main_menu():
     print_intro()
