@@ -1,5 +1,5 @@
-from models import SoilRecord
-from fetch import fetch_soil_data
+from app.models import SoilRecord
+from app.fetch import fetch_soil_data
 
 def ingest_records():
     raw_data = fetch_soil_data()

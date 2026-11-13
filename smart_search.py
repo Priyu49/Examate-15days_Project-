@@ -5,7 +5,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 def smart_search(query: str):
-    path = os.path.join("Day3", "records.json")
+    path = os.path.join("data", "records.json")
     if not os.path.exists(path):
         return []
     
@@ -15,19 +15,18 @@ def smart_search(query: str):
     if not query.strip():
         return records
 
-    # Fallback substring matching if query is too short or numeric (avoids sklearn empty vocabulary error)
+    # Fallback substring matching if query is too short or numeric
     if len(query.strip()) < 3 or query.strip().isdigit():
         results = [
             r for r in records if 
             query.lower() in str(r.get("sample_id", "")).lower() or
-            query.lower() in r.get("parameter_name", "").lower() or
-            query.lower() in r.get("what_it_means", "").lower() or
-            query.lower() in r.get("fertiliser_advice", "").lower()
+            query.lower() in str(r.get("parameter_name", "")).lower() or
+            query.lower() in str(r.get("what_it_means", "")).lower()
         ]
         return results if results else records[:3]
 
     try:
-        texts = [f"{r.get('parameter_name', '')} {r.get('what_it_means', '')} {r.get('fertiliser_advice', '')}" for r in records]
+        texts = [f"{r.get('parameter_name', '')} {r.get('what_it_means', '')}" for r in records]
         
         vectorizer = TfidfVectorizer(stop_words='english')
         tfidf_matrix = vectorizer.fit_transform(texts)
@@ -39,6 +38,4 @@ def smart_search(query: str):
         ranked_records = [records[i] for i in ranked_indices if similarity_scores[i] > 0.0]
         return ranked_records if ranked_records else records[:3]
     except Exception:
-        # Fallback to simple substring match if vectorizer encounters any text issues
         return [r for r in records if query.lower() in str(r).lower()]
-    

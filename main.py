@@ -2,12 +2,12 @@ import json
 import os
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
-from Day4.smart_search import smart_search
+from smart_search import smart_search
 
 app = FastAPI(title="MitraMaati API", version="1.0")
 
 def load_records():
-    path = os.path.join("Day3", "records.json")
+    path = os.path.join("data", "records.json")
     if not os.path.exists(path):
         return []
     with open(path, "r", encoding="utf-8") as f:
@@ -55,3 +55,8 @@ def post_question(payload: QuestionPayload):
 @app.get("/", include_in_schema=False)
 def root():
     return {"message": "Welcome to MitraMaati API"}
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    from fastapi.responses import Response
+    return Response(status_code=204)
