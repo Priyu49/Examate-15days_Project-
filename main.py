@@ -6,16 +6,29 @@ from pydantic import BaseModel
 from smart_search import smart_search
 from app.llm import get_llm_response
 from app.vectorstore import vector_store
+from app.rag import answer_question
 
 app = FastAPI(title="MitraMaati API", version="1.0")
 
 class ChatPayload(BaseModel):
     message: str
 
+class AskPayload(BaseModel):
+    question: str
+    top_k: int = 3
+
+class QuestionPayload(BaseModel):
+    question: str
+    farmer_name: str = "Anonymous"
+
 @app.post("/chat")
 def chat_endpoint(payload: ChatPayload):
     response = get_llm_response(payload.message)
     return response
+
+@app.post("/ask")
+def ask_endpoint(payload: AskPayload):
+    return answer_question(payload.question, top_k=payload.top_k)
 
 def load_records():
     path = os.path.join("data", "records.json")
@@ -23,10 +36,6 @@ def load_records():
         return []
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
-
-class QuestionPayload(BaseModel):
-    question: str
-    farmer_name: str = "Anonymous"
 
 @app.get("/health")
 def health_check():
@@ -42,16 +51,11 @@ def get_records(limit: int = Query(None, description="Limit number of records re
 @app.get("/records/{sample_id}")
 def get_record_by_id(sample_id: int):
     records = load_records()
-    # Safely return record by list index if within bounds
     if 0 <= sample_id < len(records):
         return records[sample_id]
-    
-    # Check if any record matches a custom sample_id field
     for r in records:
         if r.get("sample_id") == sample_id:
             return r
-            
-    # Fallback to the first record if available instead of raising a 404
     if records:
         return records[0]
     raise HTTPException(status_code=404, detail="Soil record not found")

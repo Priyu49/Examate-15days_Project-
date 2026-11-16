@@ -1,0 +1,17 @@
+[
+  {"id": 1, "question": "What is the ideal range and role of Nitrogen (N) in soil?", "expected_title": "Nitrogen (N)", "expected_keyword": "280"},
+  {"id": 2, "question": "How does Phosphorus (P) help in root development and energy transfer?", "expected_title": "Phosphorus (P)", "expected_keyword": "root"},
+  {"id": 3, "question": "What is the ideal range for Potassium (K) and how does it help stalks?", "expected_title": "Potassium (K)", "expected_keyword": "110"},
+  {"id": 4, "question": "What does Organic Carbon (OC) measure in the Soil Health Card?", "expected_title": "Organic Carbon (OC)", "expected_keyword": "microbial"},
+  {"id": 5, "question": "What is the ideal Soil pH scale range for nutrient availability?", "expected_title": "Soil pH", "expected_keyword": "6.0"},
+  {"id": 6, "question": "What is the exact market price of Urea fertilizer in cooperative stores across Pune today?", "expected_title": "NONE", "expected_keyword": "I don't know"},
+  {"id": 7, "question": "What is the ppm threshold and role of Zinc (Zn) for growth hormones?", "expected_title": "Zinc (Zn)", "expected_keyword": "0.6"},
+  {"id": 8, "question": "Why is Sulphur (S) essential for oilseeds and protein synthesis?", "expected_title": "Sulphur (S)", "expected_keyword": "oilseeds"},
+  {"id": 9, "question": "What does Electrical Conductivity (EC) in dS/m measure?", "expected_title": "Electrical Conductivity (EC)", "expected_keyword": "salinity"},
+  {"id": 10, "question": "How does Boron (B) assist in pollination and fruit set?", "expected_title": "Boron (B)", "expected_keyword": "pollination"},
+  {"id": 11, "question": "What is the ideal ppm range for Iron (Fe) in chlorophyll formation?", "expected_title": "Iron (Fe)", "expected_keyword": "4.5"},
+  {"id": 12, "question": "How does Manganese (Mn) support photosynthesis and chloroplast structure?", "expected_title": "Manganese (Mn)", "expected_keyword": "photosynthesis"},
+  {"id": 13, "question": "What is the role of Copper (Cu) in lignin synthesis and respiration?", "expected_title": "Copper (Cu)", "expected_keyword": "lignin"},
+  {"id": 14, "question": "Which macronutrient is measured in kg/ha with a high threshold above 560?", "expected_title": "Nitrogen (N)", "expected_keyword": "560"},
+  {"id": 15, "question": "Which parameter measures total soluble salts with an ideal limit below 1.0 dS/m?", "expected_title": "Electrical Conductivity (EC)", "expected_keyword": "salts"}
+]
