@@ -1,11 +1,9 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 class SoilRecord(BaseModel):
-    sample_id: int
-    farmer_name: str
-    location: str
-    soil_type: str
-    ph: float = Field(..., ge=0.0, le=14.0)
-    nitrogen: float
-    phosphorus: float
-    potassium: float
+    parameter_name: str
+    unit: str
+    low_below: str
+    high_above: str
+    what_it_means: str
+    source_url: str

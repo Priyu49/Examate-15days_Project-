@@ -1,15 +1,20 @@
-import json
 import os
 import requests
 
-def fetch_soil_data():
-    path = os.path.join("Day3", "records.json")
+def download_shc_manual():
+    os.makedirs("data/raw", exist_ok=True)
+    url = "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
+    filepath = os.path.join("data/raw", "FAQ_Final_English.pdf")
+    
     try:
-        response = requests.get("https://raw.githubusercontent.com/datasets/sindresorhus-top-repositories/master/data/repositories.json", timeout=5)
-    except requests.exceptions.RequestException as e:
-        print(f"Network warning (using local JSON): {e}")
-        
-    if os.path.exists(path):
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return []
+        print(f"Downloading SHC manual from {url}...")
+        response = requests.get(url, timeout=15)
+        response.raise_for_status()
+        with open(filepath, "wb") as f:
+            f.write(response.content)
+        print(f"Successfully downloaded SHC manual to {filepath}")
+    except Exception as e:
+        print(f"Error downloading SHC manual: {e}")
+
+if __name__ == "__main__":
+    download_shc_manual()

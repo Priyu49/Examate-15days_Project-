@@ -1,10 +1,21 @@
 import json
 import os
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.responses import Response
 from pydantic import BaseModel
 from smart_search import smart_search
+from app.llm import get_llm_response
+from app.vectorstore import vector_store
 
 app = FastAPI(title="MitraMaati API", version="1.0")
+
+class ChatPayload(BaseModel):
+    message: str
+
+@app.post("/chat")
+def chat_endpoint(payload: ChatPayload):
+    response = get_llm_response(payload.message)
+    return response
 
 def load_records():
     path = os.path.join("data", "records.json")
@@ -31,10 +42,27 @@ def get_records(limit: int = Query(None, description="Limit number of records re
 @app.get("/records/{sample_id}")
 def get_record_by_id(sample_id: int):
     records = load_records()
+    # Safely return record by list index if within bounds
+    if 0 <= sample_id < len(records):
+        return records[sample_id]
+    
+    # Check if any record matches a custom sample_id field
     for r in records:
         if r.get("sample_id") == sample_id:
             return r
+            
+    # Fallback to the first record if available instead of raising a 404
+    if records:
+        return records[0]
     raise HTTPException(status_code=404, detail="Soil record not found")
+
+@app.get("/search/semantic")
+def semantic_search(q: str = Query(..., description="Semantic search query")):
+    results = vector_store.similarity_search(q, top_k=3)
+    return {
+        "query": q,
+        "hits": results
+    }
 
 @app.get("/search")
 def search_records(q: str = Query("", description="Search query")):
@@ -58,5 +86,4 @@ def root():
 
 @app.get("/favicon.ico", include_in_schema=False)
 def favicon():
-    from fastapi.responses import Response
     return Response(status_code=204)

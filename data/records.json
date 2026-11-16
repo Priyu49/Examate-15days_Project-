@@ -1,17 +1,98 @@
 [
-  {"sample_id": 1, "farmer_name": "Ramesh Patil", "location": "Pune", "soil_type": "Black", "ph": 7.2, "nitrogen": 140, "phosphorus": 25, "potassium": 210},
-  {"sample_id": 2, "farmer_name": "Suresh Shinde", "location": "Satara", "soil_type": "Red", "ph": 6.5, "nitrogen": 110, "phosphorus": 18, "potassium": 150},
-  {"sample_id": 3, "farmer_name": "Anita Deshmukh", "location": "Nashik", "soil_type": "Alluvial", "ph": 7.8, "nitrogen": 160, "phosphorus": 30, "potassium": 240},
-  {"sample_id": 4, "farmer_name": "Vijay Jadhav", "location": "Kolhapur", "soil_type": "Laterite", "ph": 5.8, "nitrogen": 95, "phosphorus": 12, "potassium": 130},
-  {"sample_id": 5, "farmer_name": "Sunita Pawar", "location": "Solapur", "soil_type": "Black", "ph": 8.1, "nitrogen": 130, "phosphorus": 22, "potassium": 190},
-  {"sample_id": 6, "farmer_name": "Amit Kulkarni", "location": "Pune", "soil_type": "Black", "ph": 7.0, "nitrogen": 150, "phosphorus": 28, "potassium": 220},
-  {"sample_id": 7, "farmer_name": "Pooja More", "location": "Sangli", "soil_type": "Alluvial", "ph": 7.5, "nitrogen": 145, "phosphorus": 26, "potassium": 205},
-  {"sample_id": 8, "farmer_name": "Rahul Kale", "location": "Nagpur", "soil_type": "Red", "ph": 6.8, "nitrogen": 120, "phosphorus": 20, "potassium": 170},
-  {"sample_id": 9, "farmer_name": "Kiran Mane", "location": "Aurangabad", "soil_type": "Black", "ph": 7.9, "nitrogen": 135, "phosphorus": 24, "potassium": 185},
-  {"sample_id": 10, "farmer_name": "Sneha Joshi", "location": "Thane", "soil_type": "Laterite", "ph": 6.0, "nitrogen": 100, "phosphorus": 15, "potassium": 140},
-  {"sample_id": 11, "farmer_name": "Vikas Ghadge", "location": "Ahmednagar", "soil_type": "Black", "ph": 7.3, "nitrogen": 155, "phosphorus": 29, "potassium": 230},
-  {"sample_id": 12, "farmer_name": "Priyanka Raut", "location": "Amravati", "soil_type": "Red", "ph": 6.6, "nitrogen": 115, "phosphorus": 19, "potassium": 160},
-  {"sample_id": 13, "farmer_name": "Manoj Deshpande", "location": "Jalgaon", "soil_type": "Alluvial", "ph": 7.6, "nitrogen": 150, "phosphorus": 27, "potassium": 215},
-  {"sample_id": 14, "farmer_name": "Deepali Shinde", "location": "Latur", "soil_type": "Black", "ph": 8.0, "nitrogen": 125, "phosphorus": 21, "potassium": 175},
-  {"sample_id": 15, "farmer_name": "Nikhil Thorat", "location": "Nanded", "soil_type": "Red", "ph": 6.7, "nitrogen": 118, "phosphorus": 17, "potassium": 165}
+  {
+    "parameter_name": "Nitrogen (N)",
+    "unit": "kg/ha",
+    "low_below": "280",
+    "high_above": "560",
+    "what_it_means": "Essential macronutrient for vegetative growth, leaf development, and chlorophyll synthesis.",
+    "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
+  },
+  {
+    "parameter_name": "Phosphorus (P)",
+    "unit": "kg/ha",
+    "low_below": "10",
+    "high_above": "25",
+    "what_it_means": "Crucial for root development, flowering, fruiting, and energy transfer in plants.",
+    "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
+  },
+  {
+    "parameter_name": "Potassium (K)",
+    "unit": "kg/ha",
+    "low_below": "110",
+    "high_above": "280",
+    "what_it_means": "Regulates water uptake, disease resistance, and overall plant stalk strength.",
+    "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
+  },
+  {
+    "parameter_name": "Organic Carbon (OC)",
+    "unit": "%",
+    "low_below": "0.75",
+    "high_above": "1.0",
+    "what_it_means": "Measures soil organic matter, microbial health, and nutrient retention capacity.",
+    "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
+  },
+  {
+    "parameter_name": "Soil pH",
+    "unit": "pH scale",
+    "low_below": "6.0",
+    "high_above": "7.5",
+    "what_it_means": "Indicates soil acidity or alkalinity, directly affecting nutrient availability.",
+    "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
+  },
+  {
+    "parameter_name": "Sulphur (S)",
+    "unit": "ppm",
+    "low_below": "20",
+    "high_above": "40",
+    "what_it_means": "Essential for protein synthesis, oil synthesis in oilseeds, and enzyme activation.",
+    "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
+  },
+  {
+    "parameter_name": "Zinc (Zn)",
+    "unit": "ppm",
+    "low_below": "0.6",
+    "high_above": "1.2",
+    "what_it_means": "Required for growth hormone production and internode elongation.",
+    "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
+  },
+  {
+    "parameter_name": "Boron (B)",
+    "unit": "ppm",
+    "low_below": "0.5",
+    "high_above": "1.0",
+    "what_it_means": "Aids in pollination, fruit set, and calcium translocation within plant tissues.",
+    "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
+  },
+  {
+    "parameter_name": "Iron (Fe)",
+    "unit": "ppm",
+    "low_below": "4.5",
+    "high_above": "9.0",
+    "what_it_means": "Vital catalyst for chlorophyll formation and electron transport.",
+    "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
+  },
+  {
+    "parameter_name": "Manganese (Mn)",
+    "unit": "ppm",
+    "low_below": "2.0",
+    "high_above": "5.0",
+    "what_it_means": "Assists photosynthesis, nitrogen metabolism, and chloroplast structure.",
+    "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
+  },
+  {
+    "parameter_name": "Copper (Cu)",
+    "unit": "ppm",
+    "low_below": "0.2",
+    "high_above": "0.5",
+    "what_it_means": "Involved in lignin synthesis, respiration, and photosynthesis activation.",
+    "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
+  },
+  {
+    "parameter_name": "Electrical Conductivity (EC)",
+    "unit": "dS/m",
+    "low_below": "0.0",
+    "high_above": "1.0",
+    "what_it_means": "Measures total soluble salts and soil salinity levels.",
+    "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
+  }
 ]
