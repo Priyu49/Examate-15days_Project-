@@ -1,11 +1,11 @@
-from app.chunking import chunk_records
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
+from app.chunking import chunk_records
 
 class SimpleVectorStore:
     def __init__(self):
         self.chunks = chunk_records()
-        self.texts = [c["text"] for c in self.chunks]
+        self.texts = [c['text'] for c in self.chunks]
 
     def similarity_search(self, query: str, top_k: int = 3):
         if not self.texts:
@@ -21,7 +21,7 @@ class SimpleVectorStore:
             for idx in top_indices:
                 if scores[idx] > 0.0:
                     res = self.chunks[idx].copy()
-                    res["score"] = float(scores[idx])
+                    res['score'] = float(scores[idx])
                     results.append(res)
             return results
         except Exception:
