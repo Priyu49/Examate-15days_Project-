@@ -7,8 +7,13 @@ from smart_search import smart_search
 from app.llm import get_llm_response
 from app.vectorstore import vector_store
 from app.rag import answer_question
+from app.graph import agent_graph
 
+# 1. Initialize FastAPI app first
 app = FastAPI(title="MitraMaati API", version="1.0")
+
+class AgentRequest(BaseModel):
+    query: str
 
 class ChatPayload(BaseModel):
     message: str
@@ -20,6 +25,19 @@ class AskPayload(BaseModel):
 class QuestionPayload(BaseModel):
     question: str
     farmer_name: str = "Anonymous"
+
+@app.post("/agent")
+def run_agent_endpoint(req: AgentRequest):
+    """
+    Day 9 LangGraph agent endpoint with memory and approval state.
+    """
+    initial_state = {"query": req.query, "response": "", "approved": False, "requires_approval": False}
+    final_state = agent_graph.invoke(initial_state)
+    return {
+        "query": req.query,
+        "response": final_state["response"],
+        "approved": final_state["approved"]
+    }
 
 @app.post("/chat")
 def chat_endpoint(payload: ChatPayload):
