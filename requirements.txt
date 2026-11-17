@@ -5,3 +5,7 @@ pandas
 requests
 scikit-learn
 numpy
+pypdf
+pdfplumber
+sentence-transformers
+chromadb
