@@ -61,3 +61,45 @@ An automated evaluation runner (`eval/run_eval.py`) was executed against the pro
    ```powershell
    git clone [https://github.com/Priyu49/Examate-15days_Project-.git](https://github.com/Priyu49/Examate-15days_Project-.git)
    cd Examate-15days_Project-
+   ```
+
+2. **Install dependencies:**
+   ```powershell
+   pip install -r requirements.txt
+   ```
+
+3. **Start the API (terminal 1):**
+   ```powershell
+   uvicorn main:app --reload
+   ```
+
+4. **Start the Streamlit UI (terminal 2):**
+   ```powershell
+   streamlit run ui/app.py
+   ```
+   The UI talks to `http://127.0.0.1:8000` (override with the `MITRAMAATI_API` environment variable).
+
+---
+
+## 🖥️ Day 10 - Streamlit UI
+
+- **Chat** calls `/ask` (grounded RAG) or `/agent` (LangGraph agent). Every answer shows its **citations** (title, page when known, source link). Example questions in the sidebar, live API status, and chat download.
+- **Thumbs up / down** under each answer is saved to `data/feedback.jsonl` through `POST /feedback`.
+- **Farmer approval:** in `/agent` mode a Low/High reading pauses the graph (`interrupt()`); the farmer presses Approve or Reject and the graph resumes on the same `thread_id`.
+- **Traffic-light soil card:** type the 12 Soil Health Card values (or load a sample field); each appears as a red (Low), yellow (Medium) or green (High) tile with a one-line meaning, the dose advice and its source (`POST /soil-card`, which runs `classify_soil_card`). Includes summary counts, a status filter and CSV download.
+
+![Chat with citations and approval](docs/ui_chat.png)
+![Traffic-light soil card](docs/ui_soil_card.png)
+
+**Self-check:** `python check_day10.py` verifies files, tests, API endpoints and that the UI loads.
+
+## 🧠 Day 9 - Agent notes
+
+- `graph.py` is compiled with `MemorySaver`; each conversation is a `thread_id`, so follow-up questions remember earlier turns.
+- `approval_node` calls `interrupt()` and only continues when resumed with `Command(resume=True/False)`.
+- Questions containing a parameter and a number (e.g. "classify nitrogen 200") are routed to `classify_soil_card`; everything else goes to RAG.
+- Tests: `pytest` (see `test_graph.py`).
+
+## 🏷️ Checkpoints
+
+Checkpoint 2 demo: tag `checkpoint-2`.
