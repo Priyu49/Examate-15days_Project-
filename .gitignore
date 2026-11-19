@@ -7,3 +7,10 @@ __pycache__/
 
 # Environment variables
 .envRAG/
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.env
+data/feedback.jsonl

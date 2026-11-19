@@ -63,6 +63,7 @@ for f in UI_FILES:
 
 section("3. Packages installed")
 import importlib.util
+
 for pkg in ("fastapi", "langgraph", "streamlit", "requests", "httpx", "pytest"):
     report(importlib.util.find_spec(pkg) is not None, pkg, f"pip install {pkg}")
 
@@ -91,6 +92,7 @@ fb = os.path.join("data", "feedback.jsonl")
 fb_before = os.path.getsize(fb) if os.path.exists(fb) else None
 try:
     from fastapi.testclient import TestClient
+
     import main
     c = TestClient(main.app)
     report(c.get("/health").status_code == 200, "GET /health")

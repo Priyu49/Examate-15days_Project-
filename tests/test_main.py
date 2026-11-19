@@ -1,6 +1,8 @@
 import warnings
+
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 from fastapi.testclient import TestClient
+
 from main import app
 
 client = TestClient(app)

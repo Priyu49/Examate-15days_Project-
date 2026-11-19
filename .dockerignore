@@ -1,0 +1,12 @@
+.venv
+__pycache__
+*.pyc
+.git
+.env
+.pytest_cache
+.ruff_cache
+docs
+RAG
+tests
+test_*.py
+data/feedback.jsonl

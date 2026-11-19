@@ -100,6 +100,17 @@ An automated evaluation runner (`eval/run_eval.py`) was executed against the pro
 - Questions containing a parameter and a number (e.g. "classify nitrogen 200") are routed to `classify_soil_card`; everything else goes to RAG.
 - Tests: `pytest` (see `test_graph.py`).
 
+## Run with Docker
+
+```bash
+docker compose up --build
+```
+
+- UI: http://localhost:8501
+- API docs: http://localhost:8000/docs
+
+Put any API keys in a `.env` file (never commit it). Stop with `docker compose down`.
+
 ## 🏷️ Checkpoints
 
 Checkpoint 2 demo: tag `checkpoint-2`.
