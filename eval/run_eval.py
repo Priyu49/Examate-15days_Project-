@@ -5,6 +5,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from app.rag import answer_question
 
+
 def evaluate_config(config_name: str, chunk_size: int, top_k: int, eval_set: list) -> dict:
     keyword_hits = 0
     citation_matches = 0

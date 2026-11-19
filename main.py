@@ -1,26 +1,28 @@
 import json
 import os
 import uuid
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
+
 from fastapi import FastAPI, HTTPException, Query
-from langgraph.types import Command
 from fastapi.responses import Response
+from langgraph.types import Command
 from pydantic import BaseModel
-from smart_search import smart_search
-from app.llm import get_llm_response
-from app.vectorstore import vector_store
-from app.rag import answer_question
+
 from app.graph import agent_graph
-from app.tools import classify_soil_card, load_records as load_soil_records
+from app.llm import get_llm_response
+from app.rag import answer_question
+from app.tools import classify_soil_card
+from app.tools import load_records as load_soil_records
+from app.vectorstore import vector_store
+from smart_search import smart_search
 
 # 1. Initialize FastAPI app first
 app = FastAPI(title="MitraMaati API", version="1.0")
 
 class AgentRequest(BaseModel):
     query: str = ""
-    thread_id: Optional[str] = None   # same thread_id = same conversation memory
-    approve: Optional[bool] = None    # True/False resumes a paused approval
+    thread_id: str | None = None   # same thread_id = same conversation memory
+    approve: bool | None = None    # True/False resumes a paused approval
 
 class SoilCardPayload(BaseModel):
     values: dict[str, float]          # {"Nitrogen (N)": 200, "Soil pH": 6.4, ...}
@@ -29,7 +31,7 @@ class FeedbackPayload(BaseModel):
     question: str
     answer: str
     rating: str                       # "up" or "down"
-    thread_id: Optional[str] = None
+    thread_id: str | None = None
 
 class ChatPayload(BaseModel):
     message: str
@@ -92,7 +94,7 @@ def save_feedback(payload: FeedbackPayload):
     if payload.rating not in ("up", "down"):
         raise HTTPException(status_code=400, detail="rating must be 'up' or 'down'.")
     os.makedirs("data", exist_ok=True)
-    row = {"time": datetime.now(timezone.utc).isoformat(), **payload.model_dump()}
+    row = {"time": datetime.now(UTC).isoformat(), **payload.model_dump()}
     with open(os.path.join("data", "feedback.jsonl"), "a", encoding="utf-8") as f:
         f.write(json.dumps(row, ensure_ascii=False) + "\n")
     return {"saved": True}

@@ -1,5 +1,7 @@
 import os
+
 import requests
+
 
 def download_shc_manual():
     os.makedirs("data/raw", exist_ok=True)

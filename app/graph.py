@@ -1,5 +1,5 @@
 import operator
-from typing import Annotated, Literal, Optional, TypedDict
+from typing import Annotated, Literal, TypedDict
 
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, StateGraph
@@ -15,7 +15,7 @@ class AgentState(TypedDict, total=False):
     query: str
     response: str
     citations: list
-    tool_output: Optional[dict]
+    tool_output: dict | None
     approved: bool
     requires_approval: bool
     # Conversation memory: every finished turn is appended (kept per thread_id by the checkpointer)

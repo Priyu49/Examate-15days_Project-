@@ -1,5 +1,3 @@
-import os
-import json
 
 def get_llm_response(prompt: str) -> dict:
     """Used by POST /chat in main.py"""

@@ -1,6 +1,7 @@
 import os
-from app.vectorstore import vector_store
+
 from app.llm import generate_answer
+from app.vectorstore import vector_store
 
 UNANSWERABLE_KEYWORDS = [
     "unanswerable", "market price", "price of urea", "cooperative stores",

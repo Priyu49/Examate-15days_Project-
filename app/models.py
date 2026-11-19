@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class SoilRecord(BaseModel):
     parameter_name: str
     unit: str

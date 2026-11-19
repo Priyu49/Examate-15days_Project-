@@ -1,6 +1,7 @@
 import json
 import os
 
+
 def chunk_records():
     path = os.path.join("data", "records.json")
     if not os.path.exists(path):

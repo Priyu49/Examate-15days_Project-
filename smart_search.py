@@ -1,8 +1,10 @@
-import os
 import json
+import os
+
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+
 
 def smart_search(query: str):
     path = os.path.join("data", "records.json")

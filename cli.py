@@ -1,4 +1,5 @@
-from records import get_all_records, search_by_location, filter_by_ph_range
+from records import filter_by_ph_range, get_all_records, search_by_location
+
 
 def cli_interface():
     while True:

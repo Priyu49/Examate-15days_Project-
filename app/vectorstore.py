@@ -1,7 +1,9 @@
 import os
+
 import chromadb
+
 from app.chunking import chunk_records
-from app.embed import embed_texts, embed_query
+from app.embed import embed_query, embed_texts
 
 CHROMA_DIR = os.path.join("data", "chroma_db")
 COLLECTION_NAME = "mitramaati_shc_chunks"

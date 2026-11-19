@@ -1,7 +1,8 @@
-import sys
+import json
 import os
 import re
-import json
+import sys
+
 from pypdf import PdfReader
 
 # Add parent directory to system path so 'app' can be found

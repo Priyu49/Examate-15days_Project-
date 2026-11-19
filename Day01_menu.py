@@ -1,5 +1,6 @@
 from Day01_Intro import print_intro
 
+
 def main_menu():
     while True:
         print("\n--- MitraMaati Main Menu ---")

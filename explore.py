@@ -1,6 +1,8 @@
-import os
 import json
+import os
+
 import pandas as pd
+
 
 def explore_soil_data():
     path = os.path.join("data", "records.json")
