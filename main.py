@@ -1,6 +1,10 @@
 import json
 import os
+import uuid
+from datetime import datetime, timezone
+from typing import Optional
 from fastapi import FastAPI, HTTPException, Query
+from langgraph.types import Command
 from fastapi.responses import Response
 from pydantic import BaseModel
 from smart_search import smart_search
@@ -8,12 +12,24 @@ from app.llm import get_llm_response
 from app.vectorstore import vector_store
 from app.rag import answer_question
 from app.graph import agent_graph
+from app.tools import classify_soil_card, load_records as load_soil_records
 
 # 1. Initialize FastAPI app first
 app = FastAPI(title="MitraMaati API", version="1.0")
 
 class AgentRequest(BaseModel):
-    query: str
+    query: str = ""
+    thread_id: Optional[str] = None   # same thread_id = same conversation memory
+    approve: Optional[bool] = None    # True/False resumes a paused approval
+
+class SoilCardPayload(BaseModel):
+    values: dict[str, float]          # {"Nitrogen (N)": 200, "Soil pH": 6.4, ...}
+
+class FeedbackPayload(BaseModel):
+    question: str
+    answer: str
+    rating: str                       # "up" or "down"
+    thread_id: Optional[str] = None
 
 class ChatPayload(BaseModel):
     message: str
@@ -29,15 +45,57 @@ class QuestionPayload(BaseModel):
 @app.post("/agent")
 def run_agent_endpoint(req: AgentRequest):
     """
-    Day 9 LangGraph agent endpoint with memory and approval state.
+    Day 9 LangGraph agent with memory (MemorySaver + thread_id) and a real approval gate.
+    - Send {query, thread_id?}: runs the graph. If a farmer approval is needed the graph
+      pauses and status is "pending_approval".
+    - Send {thread_id, approve: true/false}: resumes the paused graph.
     """
-    initial_state = {"query": req.query, "response": "", "approved": False, "requires_approval": False}
-    final_state = agent_graph.invoke(initial_state)
+    thread_id = req.thread_id or str(uuid.uuid4())
+    config = {"configurable": {"thread_id": thread_id}}
+    paused = bool(agent_graph.get_state(config).next)
+
+    if req.approve is not None:
+        if not paused:
+            raise HTTPException(status_code=409, detail="Nothing is waiting for approval on this thread.")
+        result = agent_graph.invoke(Command(resume=req.approve), config)
+    else:
+        if not req.query.strip():
+            raise HTTPException(status_code=400, detail="query must not be empty.")
+        if paused:
+            raise HTTPException(status_code=409, detail="Approve or reject the pending recommendation first.")
+        result = agent_graph.invoke({"query": req.query}, config)
+
+    pending = result.get("__interrupt__")
+    state = agent_graph.get_state(config).values
     return {
+        "thread_id": thread_id,
         "query": req.query,
-        "response": final_state["response"],
-        "approved": final_state["approved"]
+        "status": "pending_approval" if pending else "done",
+        "approval_request": pending[0].value if pending else None,
+        "response": state.get("response", ""),
+        "approved": state.get("approved", False),
+        "citations": state.get("citations", []),
+        "tool_output": state.get("tool_output"),
+        "turns_remembered": len(state.get("history", [])),
     }
+
+@app.post("/soil-card")
+def soil_card(payload: SoilCardPayload):
+    """Classifies every entered value (Low/Medium/High + red/yellow/green) with classify_soil_card."""
+    order = [r["parameter_name"] for r in load_soil_records()]
+    tiles = [classify_soil_card(name, payload.values[name]) for name in order if name in payload.values]
+    unknown = [k for k in payload.values if k not in order]
+    return {"tiles": tiles, "unknown_parameters": unknown}
+
+@app.post("/feedback")
+def save_feedback(payload: FeedbackPayload):
+    if payload.rating not in ("up", "down"):
+        raise HTTPException(status_code=400, detail="rating must be 'up' or 'down'.")
+    os.makedirs("data", exist_ok=True)
+    row = {"time": datetime.now(timezone.utc).isoformat(), **payload.model_dump()}
+    with open(os.path.join("data", "feedback.jsonl"), "a", encoding="utf-8") as f:
+        f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    return {"saved": True}
 
 @app.post("/chat")
 def chat_endpoint(payload: ChatPayload):

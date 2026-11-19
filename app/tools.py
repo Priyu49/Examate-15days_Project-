@@ -1,7 +1,48 @@
 import json
 import os
+import re
 
 RECORDS_PATH = os.path.join("data", "records.json")
+
+# Words a farmer might type for each SHC parameter (used to pull "nitrogen 200" out of free text)
+PARAMETER_ALIASES = {
+    "Nitrogen (N)": ["nitrogen"],
+    "Phosphorus (P)": ["phosphorus", "phosphorous"],
+    "Potassium (K)": ["potassium"],
+    "Organic Carbon (OC)": ["organic carbon", "oc"],
+    "Soil pH": ["soil ph", "ph"],
+    "Sulphur (S)": ["sulphur", "sulfur"],
+    "Zinc (Zn)": ["zinc", "zn"],
+    "Boron (B)": ["boron"],
+    "Iron (Fe)": ["iron", "fe"],
+    "Manganese (Mn)": ["manganese", "mn"],
+    "Copper (Cu)": ["copper", "cu"],
+    "Electrical Conductivity (EC)": ["electrical conductivity", "ec"],
+}
+
+# Traffic-light colours used by the Day 10 soil card
+STATUS_COLORS = {"Low": "red", "Medium": "yellow", "High": "green"}
+
+
+def parse_soil_query(query: str):
+    """
+    Pulls (parameter_name, measured_value) out of text such as
+    'classify nitrogen 200' or 'my pH is 5.5'. Returns None when the text
+    has no parameter + number, so the caller can fall back to RAG.
+    """
+    text = query.lower()
+    number = re.search(r"-?\d+(?:\.\d+)?", text)
+    if not number:
+        return None
+    best = None
+    for name, words in PARAMETER_ALIASES.items():
+        for w in words:
+            m = re.search(rf"\b{re.escape(w)}\b", text)
+            if m and (best is None or len(w) > best[1]):
+                best = (name, len(w))
+    if best is None:
+        return None
+    return best[0], float(number.group())
 
 def load_records() -> list[dict]:
     if not os.path.exists(RECORDS_PATH):
@@ -35,22 +76,26 @@ def classify_soil_card(parameter_name: str, measured_value: float) -> dict:
     except ValueError:
         low_limit, high_limit = 0.0, 1.0
 
-    # Classification logic
+    # Classification logic (thresholds come from records.json)
     if measured_value < low_limit:
         status = "Low"
-        color = "Red / Orange"
-        # Low means GRD plus state-specified increase (e.g. +25%)
-        recommendation = f"Status is Low (below {low_limit} {matched['unit']}). Apply General Recommended Dose (GRD) + 30% increase."
-    elif low_limit <= measured_value <= high_limit:
-        status = "Medium (Moderate)"
-        color = "Green (Sufficient)"
-        # Moderate means general recommended dose
-        recommendation = f"Status is Moderate/Sufficient (within {low_limit}-{high_limit} {matched['unit']}). Apply standard GRD."
+        recommendation = (
+            f"Low (below {low_limit} {matched['unit']}). "
+            "Apply the General Recommended Dose (GRD) plus the increase your state recommends."
+        )
+    elif measured_value <= high_limit:
+        status = "Medium"
+        recommendation = (
+            f"Medium ({low_limit}-{high_limit} {matched['unit']}). "
+            "Apply the standard General Recommended Dose (GRD)."
+        )
     else:
         status = "High"
-        color = "Blue"
-        # High means general recommended dose minus 30% or restricted application
-        recommendation = f"Status is High (above {high_limit} {matched['unit']}). Apply GRD minus 30% or withhold application."
+        recommendation = (
+            f"High (above {high_limit} {matched['unit']}). "
+            "Reduce the dose below the GRD or withhold application."
+        )
+    color = STATUS_COLORS[status]
 
     return {
         "parameter": matched["parameter_name"],
@@ -60,5 +105,8 @@ def classify_soil_card(parameter_name: str, measured_value: float) -> dict:
         "color_code": color,
         "recommendation": recommendation,
         "meaning": matched["what_it_means"],
-        "source_url": matched["source_url"]
+        "source_url": matched["source_url"],
+        "page": matched.get("page"),
+        "low_below": low_limit,
+        "high_above": high_limit
     }

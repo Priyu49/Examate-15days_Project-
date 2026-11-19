@@ -9,3 +9,5 @@ pypdf
 pdfplumber
 sentence-transformers
 chromadb
+langgraph
+streamlit

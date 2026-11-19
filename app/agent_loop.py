@@ -1,42 +1,35 @@
-from app.tools import classify_soil_card
+from app.tools import classify_soil_card, parse_soil_query
 from app.vectorstore import vector_store
+
 
 def run_agent_loop(query: str) -> dict:
     """
-    A hand-written agent that can call RAG semantic search or classify_soil_card tool.
+    Hand-written agent: calls classify_soil_card when the question contains a
+    soil parameter and a number (e.g. 'classify nitrogen 200'), otherwise
+    answers from RAG semantic search.
     """
-    q_lower = query.lower()
-    
-    # Check if user is asking to classify a specific soil parameter value
-    if "classify" in q_lower or "test" in q_lower or "value" in q_lower:
-        # Simple extraction heuristic for testing tool execution
-        if "nitrogen" in q_lower:
-            result = classify_soil_card("Nitrogen (N)", 200.0)
-        elif "phosphorus" in q_lower:
-            result = classify_soil_card("Phosphorus (P)", 8.0)
-        elif "ph" in q_lower:
-            result = classify_soil_card("Soil pH", 5.5)
-        else:
-            result = classify_soil_card("Organic Carbon (OC)", 0.5)
-        
+    parsed = parse_soil_query(query)
+    if parsed:
+        name, value = parsed
+        result = classify_soil_card(name, value)
         return {
             "agent_type": "tool_execution",
             "tool_output": result,
-            "answer": f"Analyzed {result['parameter']} with measured value {result['measured_value']} {result.get('unit','')}: {result['recommendation']}"
+            "answer": (
+                f"{result['parameter']} = {result['measured_value']} {result.get('unit', '')}: "
+                f"{result['recommendation']}"
+            ),
+            "citations": [{"title": result["parameter"], "page": result.get("page", 1),
+                           "source": result.get("source_url", "")}],
         }
-    else:
-        # Default to RAG vector search
-        hits = vector_store.similarity_search(query, top_k=2)
-        if hits:
-            top = hits[0]
-            answer = f"According to Soil Health guidelines ({top['title']}): {top['text']}"
-            citations = [{"title": top["title"], "page": top["page"], "source": top["source"]}]
-        else:
-            answer = "I don't know based on available Soil Health Card records."
-            citations = []
 
-        return {
-            "agent_type": "rag_search",
-            "answer": answer,
-            "citations": citations
-        }
+    hits = vector_store.similarity_search(query, top_k=2)
+    if hits:
+        top = hits[0]
+        answer = f"According to Soil Health guidelines ({top['title']}): {top['text']}"
+        citations = [{"title": top["title"], "page": top["page"], "source": top["source"]}]
+    else:
+        answer = "I don't know based on available Soil Health Card records."
+        citations = []
+
+    return {"agent_type": "rag_search", "answer": answer, "citations": citations, "tool_output": None}
