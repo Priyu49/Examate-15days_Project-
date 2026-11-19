@@ -27,6 +27,9 @@ MitraMaati is built using a modern, production-grade technical stack:
 | **Day 07** | Document Chunking & Chroma / Vector Store | `app/chunking.py`, `app/embed.py`, `app/vectorstore.py` | Completed |
 | **Day 08** | RAG Pipeline, Citations & Evaluation Set | `app/rag.py`, `POST /ask`, `eval/eval_set.json`, `eval/run_eval.py` | Completed |
 | **Day 09** | Soil Classification Tools & LangGraph Agent | `app/tools.py`, `app/agent_loop.py`, `app/graph.py`, `POST /agent` | Completed |
+| **Day 10** | Streamlit UI, Citations Feedback & Traffic-Light Soil Card | `ui/app.py`, `POST /feedback`, `POST /soil-card`, `check_day10.py` | Completed |
+| **Day 11** | Pytest Suite (23 Tests), Ruff Linting & Docker Setup | `tests/test_basics.py`, `tests/test_graph.py`, `tests/test_main.py`, `ruff.toml`, `Dockerfile`, `docker-compose.yml` | Completed |
+
 
 ## 📊 RAG Evaluation Benchmark Winner Table
 
@@ -81,6 +84,13 @@ An automated evaluation runner (`eval/run_eval.py`) was executed against the pro
 
 ---
 
+## 🧠 Day 9 - Agent notes
+
+- `graph.py` is compiled with `MemorySaver`; each conversation is a `thread_id`, so follow-up questions remember earlier turns.
+- `approval_node` calls `interrupt()` and only continues when resumed with `Command(resume=True/False)`.
+- Questions containing a parameter and a number (e.g. "classify nitrogen 200") are routed to `classify_soil_card`; everything else goes to RAG.
+- Tests: `pytest` (see `test_graph.py`).
+
 ## 🖥️ Day 10 - Streamlit UI
 
 - **Chat** calls `/ask` (grounded RAG) or `/agent` (LangGraph agent). Every answer shows its **citations** (title, page when known, source link). Example questions in the sidebar, live API status, and chat download.
@@ -93,13 +103,29 @@ An automated evaluation runner (`eval/run_eval.py`) was executed against the pro
 
 **Self-check:** `python check_day10.py` verifies files, tests, API endpoints and that the UI loads.
 
-## 🧠 Day 9 - Agent notes
 
-- `graph.py` is compiled with `MemorySaver`; each conversation is a `thread_id`, so follow-up questions remember earlier turns.
-- `approval_node` calls `interrupt()` and only continues when resumed with `Command(resume=True/False)`.
-- Questions containing a parameter and a number (e.g. "classify nitrogen 200") are routed to `classify_soil_card`; everything else goes to RAG.
-- Tests: `pytest` (see `test_graph.py`).
+### Signature Feature: Traffic-Light Soil Card
+Enter your 12 Soil Health Card (SHC) parameter values to get an instant color-coded assessment:
+- **Green (Sufficient):** General Recommended Dose (GRD) minus 30%
+- **Yellow (Moderate):** Standard General Recommended Dose (GRD)
+- **Red (Low):** GRD plus the state-specified increase
 
+Each tile displays a plain-language meaning alongside the exact cited document page.
+
+![MitraMaati Traffic-Light Soil Card Screenshot](docs/soil_card_screenshot.png)
+
+---
+
+## Testing & Code Quality (Day 11)
+
+MitraMaati includes a `pytest` suite (23 tests covering records, search, `/health`, `/ask` with a mocked LLM, and `classify_soil_card`) and `ruff` linting.
+
+```powershell
+# Run all pytest tests
+pytest
+
+# Run ruff linter
+ruff check .
 ## Run with Docker
 
 ```bash
