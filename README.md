@@ -31,7 +31,7 @@ MitraMaati is built using a modern, production-grade technical stack:
 | **Day 09** | Soil Classification Tools & LangGraph Agent | `app/tools.py`, `app/agent_loop.py`, `app/graph.py`, `POST /agent` | Completed |
 | **Day 10** | Streamlit UI, Citations Feedback & Traffic-Light Soil Card | `ui/app.py`, `POST /feedback`, `POST /soil-card`, `check_day10.py` | Completed |
 | **Day 11** | Pytest Suite (23 Tests), Ruff Linting & Docker Setup | `tests/test_basics.py`, `tests/test_graph.py`, `tests/test_main.py`, `ruff.toml`, `Dockerfile`, `docker-compose.yml` | Completed |
-| **Day 12** | GitHub Actions CI & Render deployment config | `.github/workflows/ci.yml`, `render.yaml` | In progress |
+| **Day 12** | GitHub Actions CI & Render deployment config | `.github/workflows/ci.yml`, `render.yaml` | Completed |
 
 
 ## 📊 RAG Evaluation Benchmark Winner Table
@@ -115,7 +115,7 @@ Enter your 12 Soil Health Card (SHC) parameter values to get an instant color-co
 
 Each tile displays a plain-language meaning alongside the exact cited document page.
 
-![MitraMaati Traffic-Light Soil Card Screenshot](docs/soil_card_screenshot.png)
+![MitraMaati Traffic-Light Soil Card Screenshot](docs/ui_soil_card.png)
 
 ---
 
@@ -129,9 +129,17 @@ pytest
 
 # Run ruff linter
 ruff check .
+```
+
 ## Deploy on Render
 
-This repository includes a Render Blueprint (`render.yaml`) for the FastAPI service. In Render, create a Blueprint from this repository; Render builds the Dockerfile and checks `GET /health`. Add any required model-provider API keys as Render environment variables. The service URL will be shown in the Render dashboard after the first deploy.
+This repository includes a Render Blueprint (`render.yaml`) for the FastAPI service. Render builds the Dockerfile and checks `GET /health`.
+
+- **Live API:** [https://mitramaati-api.onrender.com](https://mitramaati-api.onrender.com)
+- **Health check:** [https://mitramaati-api.onrender.com/health](https://mitramaati-api.onrender.com/health) (`{"status":"healthy"}`)
+- **Interactive API docs:** [https://mitramaati-api.onrender.com/docs](https://mitramaati-api.onrender.com/docs)
+
+Add any required model-provider API keys as Render environment variables before using endpoints that need an LLM provider.
 
 ## Run with Docker
 
