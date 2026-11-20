@@ -101,8 +101,9 @@ An automated evaluation runner (`eval/run_eval.py`) was executed against the pro
 - **Farmer approval:** in `/agent` mode a Low/High reading pauses the graph (`interrupt()`); the farmer presses Approve or Reject and the graph resumes on the same `thread_id`.
 - **Traffic-light soil card:** type the 12 Soil Health Card values (or load a sample field); each appears as a red (Low), yellow (Medium) or green (High) tile with a one-line meaning, the dose advice and its source (`POST /soil-card`, which runs `classify_soil_card`). Includes summary counts, a status filter and CSV download.
 
-![Chat with citations and approval](docs/ui_chat.png)
-![Traffic-light soil card](docs/ui_soil_card.png)
+![MitraMaati chat showing a soil classification response](docs/ui_chat.png)
+![Soil card form with the 12 parameter input fields](docs/ui_soil_card_input.png)
+![Traffic-light soil card showing all 12 parameter assessments](docs/ui_soil_card.png)
 
 **Self-check:** `python check_day10.py` verifies files, tests, API endpoints and that the UI loads.
 
@@ -114,8 +115,6 @@ Enter your 12 Soil Health Card (SHC) parameter values to get an instant color-co
 - **Red (Low):** GRD plus the state-specified increase
 
 Each tile displays a plain-language meaning alongside the exact cited document page.
-
-![MitraMaati Traffic-Light Soil Card Screenshot](docs/ui_soil_card.png)
 
 ---
 
