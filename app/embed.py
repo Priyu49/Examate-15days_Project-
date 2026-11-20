@@ -1,12 +1,12 @@
-from sentence_transformers import SentenceTransformer
-
 MODEL_NAME = "all-MiniLM-L6-v2"
 _model = None
 
-def get_embedding_model() -> SentenceTransformer:
+def get_embedding_model():
     """Loads and caches the sentence-transformers all-MiniLM-L6-v2 model."""
     global _model
     if _model is None:
+        from sentence_transformers import SentenceTransformer
+
         _model = SentenceTransformer(MODEL_NAME)
     return _model
 

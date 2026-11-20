@@ -17,7 +17,7 @@ class ChromaVectorStore:
             metadata={"hnsw:space": "cosine"}
         )
         self.chunks = chunk_records()
-        self._index_chunks()
+        self._indexed = self.collection.count() > 0
 
     def _index_chunks(self):
         if not self.chunks:
@@ -40,10 +40,14 @@ class ChromaVectorStore:
             embeddings=embeddings,
             metadatas=metadatas
         )
+        self._indexed = True
 
     def similarity_search(self, query: str, top_k: int = 3) -> list[dict]:
         if not query or not query.strip() or not self.chunks:
             return []
+
+        if not self._indexed:
+            self._index_chunks()
 
         query_embedding = embed_query(query)
         result = self.collection.query(
