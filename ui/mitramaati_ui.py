@@ -54,7 +54,7 @@ EXAMPLES = [
     "Why is organic carbon important?",
 ]
 
-st.set_page_config(page_title="MitraMaati", page_icon="🌱", layout="wide")
+st.set_page_config(page_title="MitraMaati", page_icon=":material/eco:", layout="wide")
 
 
 # ---------------------------------------------------------------- API helpers
@@ -139,36 +139,49 @@ for _i, (_n, _u, _d, _s, _f) in enumerate(SOIL_PARAMETERS):
 
 online = api_online()
 
-with st.sidebar:
-    st.title("🌱 MitraMaati")
-    st.caption("Soil Health Card assistant")
+with st.container(border=True):
+    title_col, status_col = st.columns([4, 1], vertical_alignment="center")
+    title_col.title("MitraMaati", icon=":material/eco:")
+    title_col.caption("Soil health insights for healthier fields and more confident decisions.")
     if online:
-        st.success("API online")
+        status_col.badge("API connected", icon=":material/check_circle:", color="green")
     else:
-        st.error("API offline")
-        st.caption("Start it: `uvicorn main:app --reload --reload-exclude ui`")
-        st.button("↻ Check again")
+        status_col.badge("API offline", icon=":material/error:", color="red")
 
-    mode = st.radio("Backend endpoint", ["/ask", "/agent"],
-                    help="/ask = grounded RAG answer. /agent = LangGraph agent with memory and approval.")
+with st.sidebar:
+    st.markdown("### :material/eco: MitraMaati")
+    st.caption("Your Soil Health Card companion")
+    if online:
+        st.badge("Connected", icon=":material/check_circle:", color="green")
+    else:
+        st.badge("API offline", icon=":material/error:", color="red")
+        st.caption("Start it: `uvicorn main:app --reload --reload-exclude ui`")
+        st.button("Refresh connection", icon=":material/refresh:", width="stretch")
+
+    mode = st.segmented_control(
+        "Response mode",
+        ["/ask", "/agent"],
+        default="/ask",
+        help="/ask uses grounded retrieval. /agent adds conversation memory and approval steps.",
+    )
     if mode == "/agent" and st.session_state.thread_id:
         st.caption(f"Conversation id: `{st.session_state.thread_id[:8]}`")
 
     st.markdown("**Try asking**")
     for n, example in enumerate(EXAMPLES):
         st.button(example, key=f"ex_{n}", on_click=queue_question, args=(example,),
-                  use_container_width=True)
+                  width="stretch")
 
     if st.session_state.messages:
         lines = []
         for m in st.session_state.messages:
             who = "Farmer" if m["role"] == "user" else "MitraMaati"
             lines.append(f"{who}: {m['content']}")
-        st.download_button("⬇️ Download conversation", "\n\n".join(lines),
+        st.download_button("Download conversation", "\n\n".join(lines),
                            file_name="mitramaati_chat.txt", mime="text/plain",
-                           use_container_width=True)
+                           icon=":material/download:", width="stretch")
 
-    if st.button("🗑️ New conversation", use_container_width=True):
+    if st.button("New conversation", icon=":material/add_comment:", width="stretch"):
         st.session_state.messages = []
         st.session_state.thread_id = None
         st.rerun()
@@ -177,13 +190,15 @@ if st.session_state.flash:
     st.error(st.session_state.flash)
     st.session_state.flash = None
 
-tab_chat, tab_card = st.tabs(["💬 Chat", "🚦 Soil card"])
+tab_chat, tab_card = st.tabs(["Chat", "Soil card"])
 
 # ---------------------------------------------------------------- chat tab
 with tab_chat:
     if not st.session_state.messages:
-        st.info("Ask a question below, or pick one from **Try asking** in the sidebar. "
-                "Use **/agent** for questions like 'classify nitrogen 200'.")
+        with st.container(border=True):
+            st.subheader("Ask your soil companion", icon=":material/forum:")
+            st.write("Get clear, source-grounded guidance from your Soil Health Card records.")
+            st.caption("Choose an example in the sidebar, or ask your own question below. Use `/agent` to classify a reading such as `nitrogen 200`.")
 
     for i, msg in enumerate(st.session_state.messages):
         with st.chat_message(msg["role"]):
@@ -205,7 +220,7 @@ with tab_chat:
 
             citations = msg.get("citations") or []
             if citations:
-                with st.expander(f"📚 Citations ({len(citations)})"):
+                with st.expander(f"Citations ({len(citations)})", icon=":material/library_books:"):
                     for c in citations:
                         src = c.get("source", "")
                         link = f"[source]({src})" if str(src).startswith("http") else src
@@ -216,14 +231,14 @@ with tab_chat:
             if msg.get("pending"):
                 st.warning("Farmer approval needed before this recommendation is released.")
                 a, b, _ = st.columns([1, 1, 6])
-                a.button("✅ Approve", key=f"ok_{i}", on_click=resume_agent, args=(i, True))
-                b.button("⛔ Reject", key=f"no_{i}", on_click=resume_agent, args=(i, False))
+                a.button("Approve", key=f"ok_{i}", icon=":material/check_circle:", on_click=resume_agent, args=(i, True))
+                b.button("Reject", key=f"no_{i}", icon=":material/cancel:", on_click=resume_agent, args=(i, False))
             elif msg.get("feedback"):
                 st.caption("Thanks, your " + ("👍" if msg["feedback"] == "up" else "👎") + " was saved.")
             else:
                 a, b, _ = st.columns([1, 1, 8])
-                a.button("👍", key=f"up_{i}", on_click=send_feedback, args=(i, "up"))
-                b.button("👎", key=f"down_{i}", on_click=send_feedback, args=(i, "down"))
+                a.button("Helpful", key=f"up_{i}", icon=":material/thumb_up:", on_click=send_feedback, args=(i, "up"))
+                b.button("Not helpful", key=f"down_{i}", icon=":material/thumb_down:", on_click=send_feedback, args=(i, "down"))
 
     typed = st.chat_input("Ask about your soil, e.g. 'What does low phosphorus mean?'")
     queued = st.session_state.queued
@@ -256,21 +271,24 @@ with tab_chat:
 
 # ---------------------------------------------------------------- soil card tab
 with tab_card:
-    st.subheader("Traffic-light soil card")
-    st.caption("Enter the 12 values from your Soil Health Card. 🔴 Low · 🟡 Medium · 🟢 High")
+    st.subheader("Your soil snapshot", icon=":material/yard:")
+    st.caption("Enter the 12 values from your Soil Health Card. Each reading is compared with its recorded limits.")
+    st.markdown(":red-badge[Low] · :orange-badge[Moderate] · :green-badge[Sufficient]")
 
     top_a, top_b = st.columns([3, 1])
     top_a.selectbox("Load sample values", list(SAMPLES), key="sample_choice", on_change=apply_sample)
     top_b.write("")
-    top_b.button("↺ Reset", on_click=reset_soil, use_container_width=True)
+    top_b.button("Reset values", icon=":material/restart_alt:", on_click=reset_soil, width="stretch")
 
-    with st.form("soil_form"):
+    with st.form("soil_form", border=True):
+        st.markdown("#### Soil Health Card readings")
+        st.caption("Enter each value using the unit shown beside the parameter.")
         cols = st.columns(3)
         values = {}
         for idx, (name, unit, _default, step, fmt) in enumerate(SOIL_PARAMETERS):
             values[name] = cols[idx % 3].number_input(
                 f"{name} ({unit})", min_value=0.0, step=step, format=fmt, key=f"soil_{idx}")
-        submitted = st.form_submit_button("Classify my soil", type="primary")
+        submitted = st.form_submit_button("Create soil snapshot", type="primary", icon=":material/analytics:", width="stretch")
 
     if submitted:
         data, err = api_post("/soil-card", {"values": values})
@@ -283,11 +301,12 @@ with tab_card:
     if tiles:
         counts = {c: sum(t.get("color_code") == c for t in tiles) for c in TILE_STYLES}
         m1, m2, m3 = st.columns(3)
-        m1.metric("🔴 Low", counts["red"])
-        m2.metric("🟡 Medium", counts["yellow"])
-        m3.metric("🟢 High", counts["green"])
+        m1.metric("Low", counts["red"], border=True, height="stretch")
+        m2.metric("Moderate", counts["yellow"], border=True, height="stretch")
+        m3.metric("Sufficient", counts["green"], border=True, height="stretch")
 
-        chosen = st.multiselect("Show", ["Low", "Medium", "High"], default=["Low", "Medium", "High"])
+        chosen = st.pills("Filter readings", ["Low", "Medium", "High"],
+                          selection_mode="multi", default=["Low", "Medium", "High"])
         shown = [t for t in tiles if t.get("status") in chosen]
 
         cards = []
@@ -321,5 +340,6 @@ with tab_card:
         for t in tiles:
             writer.writerow([t["parameter"], t["measured_value"], t.get("unit", ""),
                              t["status"], t.get("recommendation", "")])
-        st.download_button("⬇️ Download results (CSV)", buf.getvalue(),
-                           file_name="soil_card.csv", mime="text/csv")
+        st.download_button("Download soil snapshot (CSV)", buf.getvalue(),
+                           file_name="soil_card.csv", mime="text/csv",
+                           icon=":material/download:")
