@@ -1,3 +1,5 @@
+[![CI](https://github.com/Priyu49/Examate-15days_Project-/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Priyu49/Examate-15days_Project-/actions/workflows/ci.yml)
+
 # 🌱 MitraMaati - Soil Health & Nutrient Advisory System
 
 MitraMaati is an intelligent agricultural advisory platform designed to analyze Soil Health Cards (SHC), track macronutrients and micronutrients (NPK, pH, Organic Carbon, etc.), and provide grounded fertilizer and crop recommendations for Indian farmers with strict source citations.
@@ -29,6 +31,7 @@ MitraMaati is built using a modern, production-grade technical stack:
 | **Day 09** | Soil Classification Tools & LangGraph Agent | `app/tools.py`, `app/agent_loop.py`, `app/graph.py`, `POST /agent` | Completed |
 | **Day 10** | Streamlit UI, Citations Feedback & Traffic-Light Soil Card | `ui/app.py`, `POST /feedback`, `POST /soil-card`, `check_day10.py` | Completed |
 | **Day 11** | Pytest Suite (23 Tests), Ruff Linting & Docker Setup | `tests/test_basics.py`, `tests/test_graph.py`, `tests/test_main.py`, `ruff.toml`, `Dockerfile`, `docker-compose.yml` | Completed |
+| **Day 12** | GitHub Actions CI & Render deployment config | `.github/workflows/ci.yml`, `render.yaml` | In progress |
 
 
 ## 📊 RAG Evaluation Benchmark Winner Table
@@ -126,6 +129,10 @@ pytest
 
 # Run ruff linter
 ruff check .
+## Deploy on Render
+
+This repository includes a Render Blueprint (`render.yaml`) for the FastAPI service. In Render, create a Blueprint from this repository; Render builds the Dockerfile and checks `GET /health`. Add any required model-provider API keys as Render environment variables. The service URL will be shown in the Render dashboard after the first deploy.
+
 ## Run with Docker
 
 ```bash
