@@ -6,11 +6,12 @@ from datetime import UTC, datetime
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import Response
 from langgraph.types import Command
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.graph import agent_graph
+from app.cache import cached_answer
 from app.llm import get_llm_response
-from app.rag import answer_question
+from app.observability import RequestMetricsMiddleware
 from app.tools import classify_soil_card
 from app.tools import load_records as load_soil_records
 from app.vectorstore import vector_store
@@ -18,31 +19,32 @@ from smart_search import smart_search
 
 # 1. Initialize FastAPI app first
 app = FastAPI(title="MitraMaati API", version="1.0")
+app.add_middleware(RequestMetricsMiddleware)
 
 class AgentRequest(BaseModel):
-    query: str = ""
+    query: str = Field(default="", max_length=1000)
     thread_id: str | None = None   # same thread_id = same conversation memory
     approve: bool | None = None    # True/False resumes a paused approval
 
 class SoilCardPayload(BaseModel):
-    values: dict[str, float]          # {"Nitrogen (N)": 200, "Soil pH": 6.4, ...}
+    values: dict[str, float] = Field(max_length=12)  # Up to 12 SHC parameters
 
 class FeedbackPayload(BaseModel):
-    question: str
-    answer: str
+    question: str = Field(max_length=1000)
+    answer: str = Field(max_length=4000)
     rating: str                       # "up" or "down"
     thread_id: str | None = None
 
 class ChatPayload(BaseModel):
-    message: str
+    message: str = Field(max_length=1000)
 
 class AskPayload(BaseModel):
-    question: str
-    top_k: int = 3
+    question: str = Field(max_length=1000)
+    top_k: int = Field(default=3, ge=1, le=5)
 
 class QuestionPayload(BaseModel):
-    question: str
-    farmer_name: str = "Anonymous"
+    question: str = Field(max_length=1000)
+    farmer_name: str = Field(default="Anonymous", max_length=100)
 
 @app.post("/agent")
 def run_agent_endpoint(req: AgentRequest):
@@ -106,7 +108,7 @@ def chat_endpoint(payload: ChatPayload):
 
 @app.post("/ask")
 def ask_endpoint(payload: AskPayload):
-    return answer_question(payload.question, top_k=payload.top_k)
+    return cached_answer(payload.question, top_k=payload.top_k)
 
 def load_records():
     path = os.path.join("data", "records.json")

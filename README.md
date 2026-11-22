@@ -59,6 +59,53 @@ An automated evaluation runner (`eval/run_eval.py`) was executed against the pro
 - `POST /ask` — Grounded RAG advisory endpoint with citations and fallback handling
 - `POST /agent` — LangGraph agent endpoint with memory and approval state
 
+## 🚀 Production Notes
+
+### The problem MitraMaati solves
+
+Soil Health Cards contain useful nutrient measurements and recommendations, but farmers can struggle to interpret thresholds, connect a reading to a practical next step, and verify where advice came from. MitraMaati turns those readings into plain-language, cited answers and a color-coded view of all 12 parameters. It keeps recommendations within the available SHC material and says when the records cannot answer a question.
+
+### Request architecture
+
+```mermaid
+flowchart LR
+    Farmer[Farmer] --> UI[Streamlit chat and soil card]
+    UI --> API[FastAPI]
+    API --> Metrics[Request metrics middleware<br/>latency and estimated tokens]
+    API --> Cache[128-entry question cache]
+    Cache --> RAG[Grounded RAG]
+    RAG --> Search[Chroma semantic search]
+    Search --> SHC[SHC chunks and citations]
+    RAG --> Answer[Cited answer or I don't know]
+    API --> Card[Pure Python soil classifier]
+    API --> Agent[LangGraph agent and approval gate]
+    API --> Feedback[Feedback JSONL]
+    Answer --> UI
+    Card --> UI
+    Agent --> UI
+```
+
+### Demo
+
+**Demo video:** _Recording link not provided yet._ Add a public video URL here when the walkthrough is uploaded. The [README screenshots](#day-10---streamlit-ui) show the chat, soil-card inputs, and classified results in the meantime.
+
+### Evaluation results
+
+The checked-in RAG benchmark reports these results for its 5-question evaluation set:
+
+| Selected configuration | Fact accuracy | Citation recall | Boundary safety | Evaluation set |
+|---|---:|---:|---:|---:|
+| 250-character chunks, top 3 | 80% | 100% | 100% | 5 questions |
+
+These are project evaluation results, not a production traffic or agronomic-outcomes study. See the [retrieval configuration comparison](#-rag-evaluation-benchmark-winner-table) and run `python eval/run_eval.py` to reproduce the benchmark.
+
+### Operational behavior and limits
+
+- Each HTTP request logs its method, path, status, latency in milliseconds, and approximate input/output/total tokens. Token counts are estimated from payload bytes (about 4 bytes per token); request and response contents are not logged.
+- `/ask` caches up to 128 normalized question and `top_k` combinations in process memory. Restarting the API clears the cache; this is a small single-instance optimization, not a shared distributed cache.
+- Text inputs are limited to 1,000 characters, feedback answers to 4,000 characters, and soil-card payloads to 12 values. `/ask` accepts `top_k` from 1 to 5.
+- Retrieved text is treated as untrusted reference material in the system prompt. A regression test checks that an instruction to reveal the system prompt does not appear in the answer.
+
 ---
 
 ## 🛠️ Installation & Local Setup
