@@ -5,7 +5,10 @@ from fastapi.testclient import TestClient
 import main
 
 client = TestClient(main.app)
-REQUIRED = {"parameter_name", "unit", "low_below", "high_above", "what_it_means", "source_url"}
+REQUIRED = {
+    "parameter_name", "unit", "low_below", "high_above", "threshold_standard",
+    "measurement_basis", "what_it_means", "source_url",
+}
 
 
 def load_records():
@@ -120,3 +123,16 @@ def test_agent_tool_classifies_soil_parameter():
     out = classify_soil_card(name, 200.0)
     assert isinstance(out, dict)
     assert "status" in out
+
+
+def test_phosphorus_classification_declares_its_threshold_standard():
+    from app.tools import classify_soil_card
+
+    out = classify_soil_card("Phosphorus (P)", 9.0)
+
+    assert out["status"] == "Low"
+    assert out["low_below"] == 10.0
+    assert out["measurement_basis"] == "P (not P2O5)"
+    assert out["threshold_standard"] == "MitraMaati Soil Health Card reference table v1"
+    assert out["threshold_table"] == "data/records.json"
+    assert out["classification_method"] == "deterministic threshold comparison"

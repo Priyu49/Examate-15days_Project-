@@ -3,6 +3,8 @@ import os
 import re
 
 RECORDS_PATH = os.path.join("data", "records.json")
+THRESHOLD_TABLE = "data/records.json"
+DEFAULT_THRESHOLD_STANDARD = "MitraMaati Soil Health Card reference table v1"
 
 # Words a farmer might type for each SHC parameter (used to pull "nitrogen 200" out of free text)
 PARAMETER_ALIASES = {
@@ -52,8 +54,8 @@ def load_records() -> list[dict]:
 
 def classify_soil_card(parameter_name: str, measured_value: float) -> dict:
     """
-    Compares each entered value with the low and high thresholds in records.json 
-    and labels it Low, Medium, or High. Applies SHC color-code rules.
+    Deterministically compares each entered value with the declared threshold
+    standard in data/records.json and labels it Low, Medium, or High.
     """
     records = load_records()
     matched = None
@@ -76,23 +78,26 @@ def classify_soil_card(parameter_name: str, measured_value: float) -> dict:
     except ValueError:
         low_limit, high_limit = 0.0, 1.0
 
+    low_text = f"{low_limit:g}"
+    high_text = f"{high_limit:g}"
+
     # Classification logic (thresholds come from records.json)
     if measured_value < low_limit:
         status = "Low"
         recommendation = (
-            f"Low (below {low_limit} {matched['unit']}). "
+            f"Low (below {low_text} {matched['unit']}). "
             "Apply the General Recommended Dose (GRD) plus the increase your state recommends."
         )
     elif measured_value <= high_limit:
         status = "Medium"
         recommendation = (
-            f"Medium ({low_limit}-{high_limit} {matched['unit']}). "
+            f"Medium ({low_text}-{high_text} {matched['unit']}). "
             "Apply the standard General Recommended Dose (GRD)."
         )
     else:
         status = "High"
         recommendation = (
-            f"High (above {high_limit} {matched['unit']}). "
+            f"High (above {high_text} {matched['unit']}). "
             "Reduce the dose below the GRD or withhold application."
         )
     color = STATUS_COLORS[status]
@@ -107,6 +112,10 @@ def classify_soil_card(parameter_name: str, measured_value: float) -> dict:
         "meaning": matched["what_it_means"],
         "source_url": matched["source_url"],
         "page": matched.get("page"),
+        "threshold_standard": matched.get("threshold_standard", DEFAULT_THRESHOLD_STANDARD),
+        "measurement_basis": matched.get("measurement_basis", matched["parameter_name"]),
+        "threshold_table": THRESHOLD_TABLE,
+        "classification_method": "deterministic threshold comparison",
         "low_below": low_limit,
         "high_above": high_limit
     }

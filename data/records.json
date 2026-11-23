@@ -4,6 +4,8 @@
     "unit": "kg/ha",
     "low_below": "280",
     "high_above": "560",
+    "threshold_standard": "MitraMaati Soil Health Card reference table v1",
+    "measurement_basis": "N",
     "what_it_means": "Essential macronutrient for vegetative growth, leaf development, and chlorophyll synthesis.",
     "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
   },
@@ -12,6 +14,8 @@
     "unit": "kg/ha",
     "low_below": "10",
     "high_above": "25",
+    "threshold_standard": "MitraMaati Soil Health Card reference table v1",
+    "measurement_basis": "P (not P2O5)",
     "what_it_means": "Crucial for root development, flowering, fruiting, and energy transfer in plants.",
     "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
   },
@@ -20,6 +24,8 @@
     "unit": "kg/ha",
     "low_below": "110",
     "high_above": "280",
+    "threshold_standard": "MitraMaati Soil Health Card reference table v1",
+    "measurement_basis": "K",
     "what_it_means": "Regulates water uptake, disease resistance, and overall plant stalk strength.",
     "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
   },
@@ -28,6 +34,8 @@
     "unit": "%",
     "low_below": "0.75",
     "high_above": "1.0",
+    "threshold_standard": "MitraMaati Soil Health Card reference table v1",
+    "measurement_basis": "OC",
     "what_it_means": "Measures soil organic matter, microbial health, and nutrient retention capacity.",
     "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
   },
@@ -36,6 +44,8 @@
     "unit": "pH scale",
     "low_below": "6.0",
     "high_above": "7.5",
+    "threshold_standard": "MitraMaati Soil Health Card reference table v1",
+    "measurement_basis": "pH scale",
     "what_it_means": "Indicates soil acidity or alkalinity, directly affecting nutrient availability.",
     "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
   },
@@ -44,6 +54,8 @@
     "unit": "ppm",
     "low_below": "20",
     "high_above": "40",
+    "threshold_standard": "MitraMaati Soil Health Card reference table v1",
+    "measurement_basis": "S",
     "what_it_means": "Essential for protein synthesis, oil synthesis in oilseeds, and enzyme activation.",
     "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
   },
@@ -52,6 +64,8 @@
     "unit": "ppm",
     "low_below": "0.6",
     "high_above": "1.2",
+    "threshold_standard": "MitraMaati Soil Health Card reference table v1",
+    "measurement_basis": "Zn",
     "what_it_means": "Required for growth hormone production and internode elongation.",
     "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
   },
@@ -60,6 +74,8 @@
     "unit": "ppm",
     "low_below": "0.5",
     "high_above": "1.0",
+    "threshold_standard": "MitraMaati Soil Health Card reference table v1",
+    "measurement_basis": "B",
     "what_it_means": "Aids in pollination, fruit set, and calcium translocation within plant tissues.",
     "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
   },
@@ -68,6 +84,8 @@
     "unit": "ppm",
     "low_below": "4.5",
     "high_above": "9.0",
+    "threshold_standard": "MitraMaati Soil Health Card reference table v1",
+    "measurement_basis": "Fe",
     "what_it_means": "Vital catalyst for chlorophyll formation and electron transport.",
     "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
   },
@@ -76,6 +94,8 @@
     "unit": "ppm",
     "low_below": "2.0",
     "high_above": "5.0",
+    "threshold_standard": "MitraMaati Soil Health Card reference table v1",
+    "measurement_basis": "Mn",
     "what_it_means": "Assists photosynthesis, nitrogen metabolism, and chloroplast structure.",
     "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
   },
@@ -84,6 +104,8 @@
     "unit": "ppm",
     "low_below": "0.2",
     "high_above": "0.5",
+    "threshold_standard": "MitraMaati Soil Health Card reference table v1",
+    "measurement_basis": "Cu",
     "what_it_means": "Involved in lignin synthesis, respiration, and photosynthesis activation.",
     "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
   },
@@ -92,6 +114,8 @@
     "unit": "dS/m",
     "low_below": "0.0",
     "high_above": "1.0",
+    "threshold_standard": "MitraMaati Soil Health Card reference table v1",
+    "measurement_basis": "dS/m",
     "what_it_means": "Measures total soluble salts and soil salinity levels.",
     "source_url": "https://soilhealth.dac.gov.in/files/FAQ_Final_English.pdf"
   }
