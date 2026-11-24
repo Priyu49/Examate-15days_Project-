@@ -13,7 +13,7 @@
     plan: free
     dockerCommand: sh start_ui.sh
     healthCheckPath: /_stcore/health
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: ./Dockerfile.ui
     dockerContext: .
     autoDeploy: true
     envVars:
