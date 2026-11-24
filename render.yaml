@@ -7,3 +7,15 @@
     dockerfilePath: ./Dockerfile
     dockerContext: .
     autoDeploy: true
+  - type: web
+    name: mitramaati
+    runtime: docker
+    plan: free
+    dockerCommand: sh start_ui.sh
+    healthCheckPath: /_stcore/health
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    autoDeploy: true
+    envVars:
+      - key: MITRAMAATI_API
+        value: https://mitramaati-api.onrender.com

@@ -179,8 +179,9 @@ ruff check .
 
 ## Deploy on Render
 
-This repository includes a Render Blueprint (`render.yaml`) for the FastAPI service. Render builds the Dockerfile and checks `GET /health`.
+This repository includes a Render Blueprint (`render.yaml`) for both the FastAPI service and the Streamlit user interface. Both services build from the Dockerfile; the UI uses Render's provided port and calls the API service using `MITRAMAATI_API`.
 
+- **Live app (Streamlit UI):** [https://mitramaati.onrender.com](https://mitramaati.onrender.com)
 - **Live API:** [https://mitramaati-api.onrender.com](https://mitramaati-api.onrender.com)
 - **Health check:** [https://mitramaati-api.onrender.com/health](https://mitramaati-api.onrender.com/health) (`{"status":"healthy"}`)
 - **Interactive API docs:** [https://mitramaati-api.onrender.com/docs](https://mitramaati-api.onrender.com/docs)
